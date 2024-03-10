@@ -1,3 +1,4 @@
 *.ipynb
 Dataset/
 __pycache__/
+.DS_Store
