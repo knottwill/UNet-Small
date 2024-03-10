@@ -32,11 +32,9 @@ def parse_args():
 
 args = parse_args()
 
-# make directory to save npz files
-os.makedirs(os.path.join(args.dataroot, "Scans"), exist_ok=True)
-
 # get cases
-cases = sorted(os.listdir(os.path.join(args.dataroot, "Images")))
+items = sorted(os.listdir(os.path.join(args.dataroot, "Images")))
+cases = [item for item in items if os.path.isdir(os.path.join(args.dataroot, "Images", item))]
 
 for case in cases:
     case_dir = os.path.join(args.dataroot, "Images", case)
@@ -55,6 +53,6 @@ for case in cases:
         images[i] = dcm.pixel_array
 
     # save array in npz file
-    filepath = os.path.join(args.dataroot, f"Scans/{case}.npz")
+    filepath = os.path.join(args.dataroot, "Images", f"{case}.npz")
     np.savez(filepath, images=images)
     print("Saved: ", filepath)
