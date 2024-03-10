@@ -20,7 +20,7 @@ from pydicom import dcmread
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
-from src.utils.general import slice_num
+from src.utils import slice_num
 
 
 def parse_args():
