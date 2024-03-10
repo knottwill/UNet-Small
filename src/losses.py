@@ -61,8 +61,9 @@ class SoftDiceLoss(nn.Module):
 
         intersection = (probs * labels).sum()
         denom = (probs.pow(self.p) + labels.pow(self.p)).sum()
-        loss = 1.0 - (2 * intersection + self.smooth) / (denom + self.smooth)
-        return loss
+        dice = (2 * intersection + self.smooth) / (denom + self.smooth)
+
+        return 1.0 - dice
 
 
 class DiceBCELoss(nn.Module):
