@@ -12,15 +12,15 @@ repos:
     hooks:
       - id: black
         language_version: python3.9
-        args: ["--line-length=170"]
+        args: ["--line-length=190"]
       - id: black-jupyter
         language_version: python3.9
-        args: ["--line-length=170"]
+        args: ["--line-length=190"]
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
       - id: flake8
-        args: ['--max-line-length=170', '--extend-ignore=E203', '--extend-ignore=E402']  # Max line length 120 characters
+        args: ['--max-line-length=190', '--extend-ignore=E203', '--extend-ignore=E402']  # Max line length 120 characters
         # Ignores E203 for whitespace before colon (causes conflicts with black)
   - repo: local
     hooks:
