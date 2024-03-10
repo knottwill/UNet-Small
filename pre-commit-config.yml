@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: debug-statements
+  - repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+        language_version: python3.9
+      - id: black-jupyter
+        language_version: python3.9
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        args: ['--max-line-length=120', '--extend-ignore=E203']  # Max line length 120 characters
+        # Ignores E203 for whitespace before colon (causes conflicts with black)
+  # - repo: local
+  #   hooks:
+  #     - id: testing
+  #       name: testing
+  #       entry: pytest
+  #       language: system
+  #       files: ^tests/
+  #       always_run: true
