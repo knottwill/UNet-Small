@@ -7,14 +7,15 @@ repos:
       - id: trailing-whitespace
       - id: mixed-line-ending
       - id: debug-statements
-  # - repo: https://github.com/psf/black
-  #   rev: 23.11.0
-  #   hooks:
-  #     - id: black
-  #       language_version: python3.9
-  #       args: ["--line-length=200"]
-  #     - id: black-jupyter
-  #       language_version: python3.9
+  - repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+        language_version: python3.9
+        args: ["--line-length=999"]
+      - id: black-jupyter
+        language_version: python3.9
+        args: ["--line-length=999"]
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
