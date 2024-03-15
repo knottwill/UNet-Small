@@ -21,6 +21,7 @@ from src.data_loading import LCTDataset
 from src.arguments import parse_args
 
 args = parse_args()
+os.makedirs(args.output_dir, exist_ok=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 

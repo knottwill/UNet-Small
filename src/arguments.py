@@ -26,7 +26,7 @@ def parse_args():
 
     # for multiple scripts
     parser.add_argument("--dataroot", type=str, help="root directory of LCTSC dataset")
-    parser.add_argument("--output_dir", type=str, help="output directory (to save predictions in)")
+    parser.add_argument("--output_dir", type=str, help="output directory")
 
     # specific to train.py
     parser.add_argument(
@@ -46,6 +46,9 @@ def parse_args():
                         eg. 0,3,5 for Case_000, Case_003, Case_005",
     )
     parser.add_argument("--prediction_type", default="prob", type=str, help="'prob' for probabilities or 'mask' for binary masks")
+
+    # specific to analysis.py
+    parser.add_argument("--predictions_dir", type=str, help="directory containing the predictions (probabilities or masks) for each case")
 
     args = parser.parse_known_args()[0]
     args = parse_cases(args)
