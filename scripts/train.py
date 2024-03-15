@@ -3,7 +3,7 @@
 @brief Script for training the UNet model for lung segmentation
 
 Example usage:
-python scripts/train.py --dataroot ./Dataset --output_dir ./Models --include_testing 1
+python ./scripts/train.py --dataroot ./Dataset --output_dir ./Models --include_testing 1
 """
 
 import os
@@ -53,7 +53,7 @@ test_set = LCTDataset(args.dataroot, test_cases)
 train_loader = DataLoader(train_set, batch_size=3, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=3, shuffle=False)
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 model = UNet(in_channels=1, out_channels=1)
 model.to(device)

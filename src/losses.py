@@ -8,10 +8,19 @@ class ComboLoss(nn.Module):
     "Combo Loss: Handling Input and Output Imbalance in Multi-Organ Segmentation"
     https://arxiv.org/pdf/1805.02798.pdf
 
+    alpha is the weight of the modified cross entropy loss
+
     beta < 0.5 penalizes false positives more, while beta > 0.5 penalize false negatives more
     alpha is the weight of the modified cross entropy loss.
 
     alpha = 2/3, beta = 0.5 yields equal weight to the loss terms since then alpha * beta = (1 - alpha)
+
+    The smoothing term serves several purposes:
+    - prevents division by zero
+    - allows a non-zero derivative when there is no ground truth mask
+    - gives rise to a smoother loss surface which helps stabalize the learning process
+
+    eps just a small constant to prevent numerical issues from log(probs)
     """
 
     def __init__(self, alpha=2 / 3, beta=0.5, smooth=1.0, eps=1e-7):
@@ -68,7 +77,7 @@ class SoftDiceLoss(nn.Module):
 
 class DiceBCELoss(nn.Module):
     """!
-    @brief Linear combination of soft-dice loss and binary cross entropy loss.
+    @brief Unweighted linear combination of soft-dice loss and binary cross entropy loss.
 
     @details Only a very slight modification of the ComboLoss, where we use normal
     binary cross entropy loss, we can set the power parameter p of the soft dice
