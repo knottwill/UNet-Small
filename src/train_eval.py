@@ -1,17 +1,13 @@
 import torch
-from torchmetrics.classification import BinaryAccuracy, Dice
 from tqdm import tqdm
 
 from .losses import ComboLoss
+from .metrics import dice_coefficients, mask_accuracies
 
 
 def train(model, device, dataloader, optimizer):
     """Train 1 epoch"""
     model.train()
-
-    # put performance metric modules on device
-    mean_accuracy = BinaryAccuracy(threshold=0.5).to(device)
-    mean_dsc = Dice(zero_division=1, threshold=0.5, average="samples").to(device)
 
     total_loss, cumulative_accuracy, cumulative_dsc = 0, 0, 0
     for x, masks in tqdm(dataloader):
@@ -22,24 +18,22 @@ def train(model, device, dataloader, optimizer):
         loss = ComboLoss()(probs, masks)
         loss.backward()
         optimizer.step()
-
         total_loss += loss.item()
-        cumulative_accuracy += mean_accuracy(probs, masks).item()
-        cumulative_dsc += mean_dsc(probs, masks.int()).item()
 
+        probs, masks = probs.detach().cpu().squeeze().numpy(), masks.detach().cpu().squeeze().numpy()
+        cumulative_accuracy += mask_accuracies(probs, masks).mean()
+        cumulative_dsc += dice_coefficients(probs, masks).mean()
+
+    batch_loss_avg = total_loss / len(dataloader)
     accuracy = cumulative_accuracy / len(dataloader)
     dsc = cumulative_dsc / len(dataloader)
 
-    return total_loss, accuracy, dsc
+    return batch_loss_avg, accuracy, dsc
 
 
 @torch.no_grad()
 def evaluate(model, device, dataloader):
     model.eval()
-
-    # put performance metric modules on device
-    mean_accuracy = BinaryAccuracy(threshold=0.5).to(device)
-    mean_dsc = Dice(zero_division=1, threshold=0.5, average="samples").to(device)
 
     total_loss, cumulative_accuracy, cumulative_dsc = 0, 0, 0
     for x, masks in dataloader:
@@ -47,12 +41,14 @@ def evaluate(model, device, dataloader):
 
         probs = model(x)
         loss = ComboLoss()(probs, masks)
-
         total_loss += loss.item()
-        cumulative_accuracy += mean_accuracy(probs, masks).item()
-        cumulative_dsc += mean_dsc(probs, masks.int()).item()
 
+        probs, masks = probs.detach().cpu().squeeze().numpy(), masks.detach().cpu().squeeze().numpy()
+        cumulative_accuracy += mask_accuracies(probs, masks).mean()
+        cumulative_dsc += dice_coefficients(probs, masks).mean()
+
+    batch_loss_avg = total_loss / len(dataloader)
     accuracy = cumulative_accuracy / len(dataloader)
     dsc = cumulative_dsc / len(dataloader)
 
-    return total_loss, accuracy, dsc
+    return batch_loss_avg, accuracy, dsc

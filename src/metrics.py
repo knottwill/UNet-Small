@@ -11,13 +11,12 @@ def mask_accuracies(preds, labels):
     @return accuracies: array of shape (batch_size,)
     """
     assert preds.shape == labels.shape, "Predicted masks and true masks must have the same shape"
-    assert len(preds.shape) == 3, "Predicted masks and true masks must have the shape (batch_size, H, W)"
 
     # convert to binary masks (if not already)
     preds = (preds > 0.5).astype(np.float32)
 
     # calculate accuracy
-    accuracies = (preds == labels).mean(axis=(1, 2))
+    accuracies = (preds == labels).mean(axis=(-2, -1))
 
     return accuracies
 
@@ -32,16 +31,13 @@ def dice_coefficients(preds, labels):
     @return DSC: array of shape (batch_size,)
     """
     assert preds.shape == labels.shape, "Predicted masks and true masks must have the same shape"
-    assert len(preds.shape) == 3, "Predicted masks and true masks must have the shape (batch_size, H, W)"
 
     # convert to binary masks (if not already)
     preds = (preds > 0.5).astype(np.float32)
 
-    intersection = (preds * labels).sum(axis=(1, 2))
-    union = preds.sum(axis=(1, 2)) + labels.sum(axis=(1, 2))
+    intersection = (preds * labels).sum(axis=(-2, -1))
+    union = preds.sum(axis=(-2, -1)) + labels.sum(axis=(-2, -1))
 
-    dsc = (2.0 * intersection + 1e-7) / (union + 1e-7)
-
-    assert dsc.shape == (preds.shape[0],), "Dice coefficients must have the shape (batch_size,)"
+    dsc = (2.0 * intersection) / (union + 1e-7)
 
     return dsc
