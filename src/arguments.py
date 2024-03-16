@@ -47,7 +47,7 @@ def parse_args():
     )
     parser.add_argument("--prediction_type", default="prob", type=str, help="'prob' for probabilities or 'mask' for binary masks")
 
-    # specific to analysis.py
+    # specific to make_plots.py
     parser.add_argument("--predictions_dir", type=str, help="directory containing the predictions (probabilities or masks) for each case")
     parser.add_argument("--metric_logger", type=str, help="file containing metric_logger")
 
