@@ -5,6 +5,7 @@ from ..metrics import dice_coefficients, mask_accuracies
 
 
 def plot_rows(df):
+    """! Plot the images, masks, predictions and metrics for each row in the dataframe."""
     fig, ax = plt.subplots(len(df), 4, figsize=(12, 3 * len(df)))
     plt.subplots_adjust(wspace=0, hspace=0)
 
@@ -39,6 +40,57 @@ def plot_rows(df):
 
         ax[i, 0].axis("off"), ax[i, 1].axis("off"), ax[i, 2].axis("off"), ax[i, 3].axis("off")
         ax[i, 3].set_aspect("equal")
+
+    plt.tight_layout()
+
+    return fig
+
+
+def plot_metric_logger(metric_logger, empty_proportion_train, empty_proportion_test):
+    """! Plot the training and test loss, DSC and accuracy for each epoch.
+
+    For the DSC metric, we scale the values by the proportion of empty masks
+    so that we get the mean DSC only for the images with masks.
+    """
+
+    n_epochs = len(metric_logger["Loss"]["train"])
+    epochs = np.arange(1, n_epochs + 1)
+
+    # Loss plot
+    fig, ax = plt.subplots(3, 1, figsize=(7, 10))
+    ax[0].plot(epochs, metric_logger["Loss"]["train"], label="Train")
+    if metric_logger["Loss"]["test"]:
+        ax[0].plot(epochs, metric_logger["Loss"]["test"], label="Test")
+    ax[0].set_xlabel("")
+    ax[0].set_xticklabels("")
+    ax[0].set_xticks(epochs)
+    ax[0].set_ylabel("Combo Loss", fontsize=16)
+    ax[0].text(0.9, 0.5, "(a)", fontsize=16, transform=ax[0].transAxes, fontweight="bold")
+    ax[0].legend()
+
+    # We scale DSC by the proportion of empty masks so that we get the mean DSC only for the images with masks
+    dsc_train = np.array(metric_logger["DSC"]["train"]) / (1 - empty_proportion_train)
+    ax[1].plot(epochs, dsc_train, label="Train")
+    if metric_logger["DSC"]["test"]:
+        dsc_test = np.array(metric_logger["DSC"]["test"]) / (1 - empty_proportion_test)
+        ax[1].plot(epochs, dsc_test, label="Test")
+
+    ax[1].set_xlabel("")
+    ax[1].set_xticklabels("")
+    ax[1].set_xticks(epochs)
+    ax[1].set_ylabel("DSC", fontsize=16)
+    ax[1].text(0.9, 0.5, "(b)", fontsize=16, transform=ax[1].transAxes, fontweight="bold")
+    ax[1].legend()
+
+    # Accuracy plot
+    ax[2].plot(epochs, metric_logger["Accuracy"]["train"], label="Train")
+    if metric_logger["Accuracy"]["test"]:
+        ax[2].plot(epochs, metric_logger["Accuracy"]["test"], label="Test")
+    ax[2].set_xticks(epochs)
+    ax[2].set_xlabel("Epoch", fontsize=16)
+    ax[2].set_ylabel("Accuracy", fontsize=16)
+    ax[2].text(0.9, 0.5, "(c)", fontsize=16, transform=ax[2].transAxes, fontweight="bold")
+    ax[2].legend()
 
     plt.tight_layout()
 
