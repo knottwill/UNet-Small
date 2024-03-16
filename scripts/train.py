@@ -14,7 +14,6 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 import pickle
-from tqdm import tqdm
 import numpy as np
 import random
 
@@ -65,7 +64,7 @@ metric_logger = {"Loss": {"train": [], "test": []}, "Accuracy": {"train": [], "t
 
 num_epochs = 10
 
-for epoch in tqdm(range(num_epochs)):
+for epoch in range(num_epochs):
     train_loss, train_acc, train_dsc = train(model, device, train_loader, optimizer)
     print(f"[train] Epoch {epoch+1}/{num_epochs} - Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}, DSC: {train_dsc:.4f}")
     metric_logger["Loss"]["train"].append(train_loss)
@@ -73,7 +72,9 @@ for epoch in tqdm(range(num_epochs)):
     metric_logger["DSC"]["train"].append(train_dsc)
 
     # save model state after each epoch
-    torch.save(model.state_dict(), os.path.join(args.output_dir, "UNet.pt"))
+    save_path = os.path.join(args.output_dir, "UNet.pt")
+    torch.save(model.state_dict(), save_path)
+    print(f"Model saved to {save_path}")
 
     if args.include_testing:
         test_loss, test_acc, test_dsc = evaluate(model, device, test_loader)
@@ -83,5 +84,7 @@ for epoch in tqdm(range(num_epochs)):
         metric_logger["DSC"]["test"].append(test_dsc)
 
 # save the metric_logger (as a pkl file)
-with open(os.path.join(args.output_dir, "metric_logger.pkl"), "wb") as f:
+save_path = os.path.join(args.output_dir, "metric_logger.pkl")
+with open(save_path, "wb") as f:
     pickle.dump(metric_logger, f)
+print(f"Metric logger saved to {save_path}")

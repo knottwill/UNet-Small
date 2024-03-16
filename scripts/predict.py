@@ -1,7 +1,7 @@
 """
 
 python scripts/predict.py --dataroot ./Dataset --model_state_dict ./Models/UNet.pt --output_dir ./Predictions \
---cases all --prediction_type prob --device cpu
+--cases all --prediction_type prob
 """
 
 import os
@@ -46,8 +46,10 @@ for case in args.cases:
     if args.prediction_type == "prob":
         probs = probs.squeeze().detach().cpu().numpy()
         np.savez(save_path, probs=probs)
+        print(f"Case {case} predicted probabilities saved to {save_path}")
 
     elif args.prediction_type == "mask":
         masks_pred = (probs > 0.5).float()
         masks_pred = masks_pred.squeeze().detach().cpu().numpy()
         np.savez(save_path, masks=masks_pred)
+        print(f"Case {case} predicted masks saved to {save_path}")

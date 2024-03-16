@@ -8,11 +8,12 @@ aligned with the segmentation arrays, and saves them in npz files.
 order to the images (eg. 1-002.dcm corresponds to masks[-2]). However, for Case_011,
 the naming convention is [1-1.dcm, 1-2.dcm, ...] and the segmentations are already aligned with
 the images. (eg. 1-001.dcm corresponds to masks[0], 1-002.dcm corresponds to masks[1], ...)
+
+python scripts/preprocessing.py --dataroot ./Dataset
 """
 
 import os
 import sys
-import argparse
 import numpy as np
 from pydicom import dcmread
 
@@ -21,14 +22,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 from src.utils import slice_num
-
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dataroot", type=str, help="root directory of LCTSC dataset")
-    args = parser.parse_known_args()[0]
-    return args
-
+from src.arguments import parse_args
 
 args = parse_args()
 
