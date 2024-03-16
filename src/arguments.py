@@ -5,11 +5,11 @@ def parse_cases(args):
     """Parse the 'cases' argument which specify the cases to predict on"""
 
     if args.cases == "train":
-        args.cases = [f"Case_{i:03}" for i in range(0, 8)]
+        args.cases = [f"Case_{i:03}" for i in range(8)]
     elif args.cases == "test":
         args.cases = [f"Case_{i:03}" for i in range(8, 12)]
     elif args.cases == "all":
-        args.cases = [f"Case_{i:03}" for i in range(0, 12)]
+        args.cases = [f"Case_{i:03}" for i in range(12)]
     else:
         case_nums = args.cases.split(",")
         args.cases = []
@@ -49,6 +49,7 @@ def parse_args():
 
     # specific to analysis.py
     parser.add_argument("--predictions_dir", type=str, help="directory containing the predictions (probabilities or masks) for each case")
+    parser.add_argument("--metric_logger", type=str, help="file containing metric_logger")
 
     args = parser.parse_known_args()[0]
     args = parse_cases(args)
