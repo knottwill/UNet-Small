@@ -18,9 +18,9 @@ from src.analysis.utils import construct_results_dataframe
 args = parse_args()
 
 with open("train_test_split.json", "r") as f:
-    data = json.load(f)
-    train_cases = data["train"]
-    test_cases = data["test"]
+    split = json.load(f)
+    train_cases = split["train"]
+    test_cases = split["test"]
 
 # get results dataframe
 df = construct_results_dataframe(args.dataroot, args.predictions_dir, train_cases, test_cases)

@@ -44,9 +44,9 @@ args = parse_args()
 os.makedirs(args.output_dir, exist_ok=True)
 
 with open("train_test_split.json", "r") as f:
-    data = json.load(f)
-    train_cases = data["train"]
-    test_cases = data["test"]
+    split = json.load(f)
+    train_cases = split["train"]
+    test_cases = split["test"]
 print(f"Training on {len(train_cases)} cases: {train_cases}\n\tTesting on {len(test_cases)} cases: {test_cases}.")
 
 train_set = LCTDataset(args.dataroot, train_cases)
