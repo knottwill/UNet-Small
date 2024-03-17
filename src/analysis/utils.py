@@ -5,11 +5,9 @@ import pandas as pd
 from ..metrics import mask_accuracies, dice_coefficients
 
 
-def construct_results_dataframe(dataroot, predictions_dir):
+def construct_results_dataframe(dataroot, predictions_dir, train_cases, test_cases):
     # load the images, ground truth masks and mask probability predictions
     # and calculate DSC and accuracy for all slices for all cases
-    train_cases = [f"Case_{i:03}" for i in range(1, 8)]
-    test_cases = [f"Case_{i:03}" for i in range(8, 12)]
 
     data = []
 

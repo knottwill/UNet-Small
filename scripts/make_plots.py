@@ -11,6 +11,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 import pickle
+import json
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -27,8 +28,13 @@ from src.analysis.visualisation import plot_metric_logger
 args = parse_args()
 os.makedirs(args.output_dir, exist_ok=True)
 
+with open("train_test_split.json", "r") as f:
+    data = json.load(f)
+    train_cases = data["train"]
+    test_cases = data["test"]
+
 # get results dataframe
-df = construct_results_dataframe(args.dataroot, args.predictions_dir)
+df = construct_results_dataframe(args.dataroot, args.predictions_dir, train_cases, test_cases)
 test_filter = df["Set"] == "test"
 train_filter = df["Set"] == "train"
 

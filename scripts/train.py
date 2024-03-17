@@ -14,6 +14,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 import pickle
+import json
 import numpy as np
 import random
 
@@ -42,8 +43,10 @@ args = parse_args()
 
 os.makedirs(args.output_dir, exist_ok=True)
 
-train_cases = [f"Case_{i:03d}" for i in range(8)]
-test_cases = [f"Case_{i:03}" for i in range(8, 12)]
+with open("train_test_split.json", "r") as f:
+    data = json.load(f)
+    train_cases = data["train"]
+    test_cases = data["test"]
 print(f"Training on {len(train_cases)} cases: {train_cases}\n\tTesting on {len(test_cases)} cases: {test_cases}.")
 
 train_set = LCTDataset(args.dataroot, train_cases)

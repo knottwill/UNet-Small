@@ -6,6 +6,7 @@ python scripts/get_statistics.py --dataroot ./Dataset --predictions_dir ./Predic
 import os
 import sys
 import numpy as np
+import json
 
 # add project root to sys.path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -16,8 +17,13 @@ from src.analysis.utils import construct_results_dataframe
 
 args = parse_args()
 
+with open("train_test_split.json", "r") as f:
+    data = json.load(f)
+    train_cases = data["train"]
+    test_cases = data["test"]
+
 # get results dataframe
-df = construct_results_dataframe(args.dataroot, args.predictions_dir)
+df = construct_results_dataframe(args.dataroot, args.predictions_dir, train_cases, test_cases)
 test_filter = df["Set"] == "test"
 train_filter = df["Set"] == "train"
 

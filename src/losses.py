@@ -73,25 +73,3 @@ class SoftDiceLoss(nn.Module):
         dice = (2 * intersection + self.smooth) / (denom + self.smooth)
 
         return 1.0 - dice
-
-
-class DiceBCELoss(nn.Module):
-    """!
-    @brief Unweighted linear combination of soft-dice loss and binary cross entropy loss.
-
-    @details Only a very slight modification of the ComboLoss, where we use normal
-    binary cross entropy loss, we can set the power parameter p of the soft dice
-    loss to different values, and the soft dice loss part is "1 - soft-dice-coefficient" instead
-    of just soft-dice-coefficient.
-    """
-
-    def __init__(self, p=1, smooth=1):
-        super(DiceBCELoss, self).__init__()
-        self.p = p
-        self.smooth = smooth
-
-    def forward(self, probs, labels):
-        dice_loss = SoftDiceLoss(p=self.p, smooth=self.smooth)(probs, labels)
-        bce = nn.BCELoss()(probs, labels)
-        loss = dice_loss + bce
-        return loss

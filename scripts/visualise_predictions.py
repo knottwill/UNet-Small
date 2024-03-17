@@ -11,6 +11,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 import pandas as pd
+import json
 
 from src.arguments import parse_args
 from src.analysis.utils import construct_results_dataframe
@@ -19,8 +20,13 @@ from src.analysis.visualisation import plot_rows
 args = parse_args()
 os.makedirs(args.output_dir, exist_ok=True)
 
+with open("train_test_split.json", "r") as f:
+    data = json.load(f)
+    train_cases = data["train"]
+    test_cases = data["test"]
+
 # get results dataframe
-df = construct_results_dataframe(args.dataroot, args.predictions_dir)
+df = construct_results_dataframe(args.dataroot, args.predictions_dir, train_cases, test_cases)
 test_filter = df["Set"] == "test"
 train_filter = df["Set"] == "train"
 
