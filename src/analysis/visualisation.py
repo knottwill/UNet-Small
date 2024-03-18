@@ -9,6 +9,7 @@ def plot_rows(df):
     fig, ax = plt.subplots(len(df), 4, figsize=(12, 3 * len(df)))
     plt.subplots_adjust(wspace=0, hspace=0)
 
+    labels = ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)"]
     for i, (_, row) in enumerate(df.iterrows()):
         image = row["Image"]
         mask = row["Mask"]
@@ -28,6 +29,7 @@ def plot_rows(df):
         ax[i, 1].imshow(mask, cmap="gray")
         ax[i, 2].imshow(prediction, cmap="gray")
 
+        ax[i, 3].text(0.4, 0.8, labels[i], fontsize=13, transform=ax[i, 3].transAxes, fontweight="bold")
         ax[i, 3].text(
             0.5,
             0.5,

@@ -1,6 +1,6 @@
-"""!@file analysis.py
+"""!@file make_plots.py
 
-python scripts/analysis.py --dataroot ./Dataset --predictions_dir ./Predictions --metric_logger ./Models/metric_logger.pkl --output_dir ./plots
+python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predictions --metric_logger ./Models/metric_logger.pkl --output_dir ./plots
 """
 
 import os
@@ -38,40 +38,6 @@ df = construct_results_dataframe(args.dataroot, args.predictions_dir, train_case
 test_filter = df["Set"] == "test"
 train_filter = df["Set"] == "train"
 
-###################
-# Main Statistics
-###################
-
-# First we split the dataframe into sets with and without ground-truth masks
-test_no_mask = df[test_filter][df[test_filter]["Mask Size"] == 0]
-test_with_mask = df[test_filter][df[test_filter]["Mask Size"] > 0]
-train_no_mask = df[train_filter][df[train_filter]["Mask Size"] == 0]
-train_with_mask = df[train_filter][df[train_filter]["Mask Size"] > 0]
-
-print("\n###########################################################")
-print("##################### Main Statistics #####################\n")
-
-print(f"Mean DSC for images with masks in test set: {test_with_mask['DSC'].mean():.5f}")
-print(f"Mean DSC for images with masks in train set: {train_with_mask['DSC'].mean():.5f}\n")
-print(f'Mean accuracy overall in test set: {df[test_filter]["Accuracy"].mean():.5f}')
-print(f'Mean accuracy overall in train set: {df[train_filter]["Accuracy"].mean():.5f}\n')
-
-print(f'Mean accuracy for empty masks in test set: {test_no_mask["Accuracy"].mean():.5f}')
-empty_correctly_predicted = len(test_no_mask[test_no_mask["Accuracy"] == 1]) / len(test_no_mask)
-print(f"Proportion of empty masks in test set with perfect accuracy: {empty_correctly_predicted:.5f}\n")
-
-# calculate recall and specificity in test set
-masks = np.stack(df[test_filter]["Mask"].to_numpy()).flatten()
-probs = np.stack(df[test_filter]["Prediction"].to_numpy()).flatten()
-pred = (probs > 0.5).astype(int)
-
-recall = (masks * pred).sum() / masks.sum()
-specificity = ((1 - masks) * (1 - pred)).sum() / (1 - masks).sum()
-
-print(f"Recall in test set: {recall:.5f}")
-print(f"Specificity in test set: {specificity:.5f}\n")
-print("###########################################################\n")
-
 ################
 # Plot loss, DSC and accuracy over training
 ################
@@ -92,38 +58,36 @@ fig.savefig(os.path.join(args.output_dir, "training-metrics.png"))
 #################
 
 fig, ax = plt.subplots(2, 2, figsize=(12, 12))
-sns.histplot(df[test_filter]["DSC"], bins=20, ax=ax[0, 0])
+sns.histplot(df[test_filter]["DSC"], bins=30, ax=ax[0, 0])
 ax[0, 0].set_ylabel("Frequency", fontsize=16)
-ax[0, 0].set_ylim(0, 415)
+ax[0, 0].set_ylim(0, 250)
 ax[0, 0].set_xlabel("DSC", fontsize=16)
+ax[0, 0].set_xticks(np.arange(0, 1.1, 0.1))
 ax[0, 0].legend(["test"], fontsize=16)
 ax[0, 0].text(0.1, 0.9, "(a)", fontsize=16, transform=ax[0, 0].transAxes, fontweight="bold")
 
-bins = np.linspace(0.96, 1.0, 21)
-sns.histplot(df[test_filter]["Accuracy"], bins=bins, ax=ax[0, 1])
+sns.histplot(df[test_filter]["Accuracy"], bins=30, ax=ax[0, 1])
 ax[0, 1].set_ylabel("")
 ax[0, 1].set_xlabel("Accuracy", fontsize=16)
 ax[0, 1].set_yticklabels([])
-ax[0, 1].set_ylim(0, 415)
+ax[0, 1].set_ylim(0, 250)
 ax[0, 1].legend(["test"], fontsize=16)
-ax[0, 1].set_xlim(0.96, 1.0)  # Setting limits for Accuracy
 ax[0, 1].text(0.1, 0.9, "(b)", fontsize=16, transform=ax[0, 1].transAxes, fontweight="bold")
 
-sns.histplot(df[train_filter]["DSC"], bins=20, ax=ax[1, 0], color="g")
+sns.histplot(df[train_filter]["DSC"], bins=30, ax=ax[1, 0], color="g")
 ax[1, 0].set_ylabel("Frequency", fontsize=16)
-ax[1, 0].set_ylim(0, 900)
+ax[1, 0].set_ylim(0, 650)
 ax[1, 0].set_xlabel("DSC", fontsize=16)
+ax[1, 0].set_xticks(np.arange(0, 1.1, 0.1))
 ax[1, 0].legend(["train"], fontsize=16)
 ax[1, 0].text(0.1, 0.9, "(c)", fontsize=16, transform=ax[1, 0].transAxes, fontweight="bold")
 
-bins = np.linspace(0.96, 1.0, 21)
-sns.histplot(df[train_filter]["Accuracy"], bins=bins, ax=ax[1, 1], color="g")
+sns.histplot(df[train_filter]["Accuracy"], bins=30, ax=ax[1, 1], color="g")
 ax[1, 1].set_ylabel("")
 ax[1, 1].set_xlabel("Accuracy", fontsize=16)
 ax[1, 1].set_yticklabels([])
-ax[1, 1].set_ylim(0, 900)
+ax[1, 1].set_ylim(0, 650)
 ax[1, 1].legend(["train"], fontsize=16)
-ax[1, 1].set_xlim(0.96, 1.0)  # Setting limits for Accuracy
 ax[1, 1].text(0.1, 0.9, "(d)", fontsize=16, transform=ax[1, 1].transAxes, fontweight="bold")
 
 plt.tight_layout()
@@ -184,6 +148,10 @@ fig.savefig(os.path.join(args.output_dir, "heatmaps.png"))
 
 print("Plotting precision-recall curve... (may take a few minutes)")
 
+# calculate recall and specificity in test set
+masks = np.stack(df[test_filter]["Mask"].to_numpy()).flatten()
+probs = np.stack(df[test_filter]["Prediction"].to_numpy()).flatten()
+
 # precision-recall curve
 precision, recall, _ = precision_recall_curve(masks, probs)
 AUC = auc(recall, precision)
@@ -193,8 +161,8 @@ ax.step(recall, precision, color="b", alpha=0.2, where="post")
 ax.fill_between(recall, precision, step="post", alpha=0.2, color="b")
 ax.set_xlabel("Recall")
 ax.set_ylabel("Precision")
-ax.set_ylim([0.0, 1.05])
-ax.set_xlim([0.0, 1.05])
+ax.set_ylim([0.0, 1.001])
+ax.set_xlim([0.0, 1.001])
 ax.set_title(f"AUC={AUC}")
 
 # save figure
