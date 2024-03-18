@@ -70,11 +70,11 @@ print("###########################################################\n")
 #####################
 
 high_dsc = test_with_mask["DSC"] > 0.975
-mid_dsc = (test_with_mask["DSC"] > 0.8) & (test_with_mask["DSC"] < 0.975)
+mid_dsc = (test_with_mask["DSC"] > 0.8) & (test_with_mask["DSC"] <= 0.975)
 low_dsc = test_with_mask["DSC"] <= 0.8
 
 print("Proportion of test set with DSC > 0.975: ", len(test_with_mask[high_dsc]) / len(df[test_filter]))
-print("Proportion of test set with DSC in (0.8, 0.975): ", len(test_with_mask[mid_dsc]) / len(df[test_filter]))
+print("Proportion of test set with DSC in (0.8, 0.975]: ", len(test_with_mask[mid_dsc]) / len(df[test_filter]))
 print("Proportion of test set with DSC < 0.8: ", len(test_with_mask[low_dsc]) / len(df[test_filter]))
 
 # high dsc catagory
@@ -83,9 +83,9 @@ fig = plot_rows(high)
 fig.savefig(os.path.join(args.output_dir, "best_high_dsc.png"))
 
 # intermediate dsc category
-# we pick them out at regular intervals of accuracy
+# we pick them out at regular intervals of DSC
 intermediates = test_with_mask[mid_dsc]
-intermediates = intermediates.sort_values("Accuracy", ascending=False)[6::20]
+intermediates = intermediates.sort_values("DSC", ascending=False)[12::30]
 fig = plot_rows(intermediates)
 fig.savefig(os.path.join(args.output_dir, "intermediate-dsc.png"))
 
@@ -94,23 +94,34 @@ low = test_with_mask[low_dsc].sample(3, random_state=1)
 fig = plot_rows(low)
 fig.savefig(os.path.join(args.output_dir, "low-dsc.png"))
 
+# lowest accuracy
+worst = test_with_mask.sort_values("Accuracy", ascending=True).head(3)
+fig = plot_rows(worst)
+fig.savefig(os.path.join(args.output_dir, "worst-accuracy.png"))
+
 #########################
 # Test-set examples with no masks
 # (DSC is zero always - accuracy is the only meaningful metric)
 #########################
 
 perf_acc = test_no_mask["Accuracy"] == 1
-mid_acc = (test_no_mask["Accuracy"] > 0.998) & (test_no_mask["Accuracy"] < 1)
-worst_acc = test_no_mask["Accuracy"] < 0.998
+high_acc = (test_no_mask["Accuracy"] >= 0.9999) & (test_no_mask["Accuracy"] < 1)
+low_acc = test_no_mask["Accuracy"] <= 0.9999
 
-print("Proportion of test set with perfect accuracy: ", len(test_no_mask[perf_acc]) / len(df[test_filter]))
-print("Proportion of test set with accuracy in (0.998, 1): ", len(test_no_mask[mid_acc]) / len(df[test_filter]))
-print("Proportion of test set with accuracy < 0.998: ", len(test_no_mask[worst_acc]) / len(df[test_filter]))
+print(f"Proportion of test-set empty-masks with perfect accuracy: {perf_acc.mean():.5f}")
+print(f"Proportion of test-set empty-masks with accuracy in (0.999, 1): {high_acc.mean():.5f}")
+print(f"Proportion of test-set empty-masks with accuracy < 0.999: {low_acc.mean():.5f}")
 
 perf = test_no_mask[perf_acc].sample(1, random_state=0)
-mid = test_no_mask[mid_acc].sample(1, random_state=0)
-worst = test_no_mask[worst_acc].sample(1, random_state=0)
+mid = test_no_mask[high_acc].sample(1, random_state=0)
+worst = test_no_mask.sort_values("Accuracy", ascending=True).head(1)
 
 no_mask = pd.concat([perf, mid, worst])
 fig = plot_rows(no_mask)
 fig.savefig(os.path.join(args.output_dir, "no-mask.png"))
+
+# 'good' predictions
+high_dsc = df[test_filter]["DSC"] > 0.975
+high_acc_no_mask = (df[test_filter]["Mask Size"] == 0) & (df[test_filter]["Accuracy"] > 0.999)
+good = df[test_filter][high_dsc | high_acc_no_mask]
+print(f"\n\nProportion of test set with DSC > 0.975 or empty masks & accuracy > 0.999: {len(good) / len(df[test_filter])}")
