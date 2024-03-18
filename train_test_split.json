@@ -1,4 +1,4 @@
 {
-    "train": ["Case_000", "Case_001", "Case_002", "Case_003", "Case_004", "Case_005", "Case_006", "Case_007"],
-    "test": ["Case_008", "Case_009", "Case_010", "Case_011"]
+    "train": ["Case_000", "Case_001", "Case_003", "Case_004", "Case_006", "Case_007", "Case_008", "Case_009"],
+    "test": ["Case_002", "Case_005", "Case_010", "Case_011"]
 }

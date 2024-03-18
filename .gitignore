@@ -6,3 +6,4 @@ __pycache__/
 Models/
 Predictions/
 plots/
+get_statistics.py
