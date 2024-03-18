@@ -13,7 +13,7 @@ def plot_rows(df):
     for i, (_, row) in enumerate(df.iterrows()):
         image = row["Image"]
         mask = row["Mask"]
-        prediction = (row["Prediction"] > 0.5).astype(np.uint8)
+        prediction = (row["Probabilities"] > 0.5).astype(np.uint8)
         case = row["Case"]
         slice_idx = row["Slice Index"]
         dsc = dice_coefficients(prediction, mask)

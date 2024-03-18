@@ -55,7 +55,7 @@ print(f"Proportion of empty masks in test set with perfect accuracy: {empty_corr
 
 # calculate recall and specificity in test set
 masks = np.stack(df[test_filter]["Mask"].to_numpy()).flatten()
-probs = np.stack(df[test_filter]["Prediction"].to_numpy()).flatten()
+probs = np.stack(df[test_filter]["Probabilities"].to_numpy()).flatten()
 pred = (probs > 0.5).astype(int)
 
 recall = (masks * pred).sum() / masks.sum()

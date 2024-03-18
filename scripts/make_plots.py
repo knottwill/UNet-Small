@@ -150,7 +150,7 @@ print("Plotting precision-recall curve... (may take a few minutes)")
 
 # calculate recall and specificity in test set
 masks = np.stack(df[test_filter]["Mask"].to_numpy()).flatten()
-probs = np.stack(df[test_filter]["Prediction"].to_numpy()).flatten()
+probs = np.stack(df[test_filter]["Probabilities"].to_numpy()).flatten()
 
 # precision-recall curve
 precision, recall, _ = precision_recall_curve(masks, probs)

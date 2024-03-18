@@ -23,7 +23,7 @@ def construct_results_dataframe(dataroot, predictions_dir, train_cases, test_cas
     - Mask Size: proportion of mask pixels in the ground truth mask
     - Image: the image
     - Mask: the ground truth mask
-    - Prediction: the predicted probabilities
+    - Probabilities: the predicted probabilities
 
     @param dataroot: root directory of the LCTSC dataset
     @param predictions_dir: directory containing the predictions for each case
@@ -58,6 +58,6 @@ def construct_results_dataframe(dataroot, predictions_dir, train_cases, test_cas
         for i in range(len(images)):
             data.append(["train", case, i, accuracies[i], dscs[i], mask_proportions[i], images[i], masks[i], probs[i]])
 
-    df = pd.DataFrame(data, columns=["Set", "Case", "Slice Index", "Accuracy", "DSC", "Mask Size", "Image", "Mask", "Prediction"])
+    df = pd.DataFrame(data, columns=["Set", "Case", "Slice Index", "Accuracy", "DSC", "Mask Size", "Image", "Mask", "Probabilities"])
 
     return df
