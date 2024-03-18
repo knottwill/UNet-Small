@@ -1,9 +1,33 @@
+"""!@file model.py
+
+@brief Implementation of small UNet model
+
+@details Note that we have included the sigmoid activation
+function in the forward pass, so that the model outputs probabilities
+
+https://arxiv.org/abs/1505.04597
+"""
+
+
 import torch
 from torch import nn
 
 
 class UNet(nn.Module):
+    """!
+    @brief Small UNet model for segmentation
+
+    @details The model consists of 3 downsampling blocks, a middle block, and 3 upsampling blocks.
+             Skip connections are used to connect the downsampling and upsampling blocks.
+             Batch normalization is used for stable training.
+             The output logits are passed through a sigmoid activation function to get the probabilities.
+    """
+
     def __init__(self, in_channels, out_channels):
+        """!
+        @param in_channels: number of input channels
+        @param out_channels: number of output channels
+        """
         super().__init__()
         self.conv1 = self.conv_block(in_channels, 16, 3, 1, 1)
         self.maxpool1 = self.maxpool_block(2, 2, 0)
@@ -76,6 +100,11 @@ class UNet(nn.Module):
         return final
 
     def forward(self, x):
+        """!
+        @param x: input tensor of shape (batch_size, in_channels, H, W)
+
+        @return: probabilities of shape (batch_size, out_channels, H, W)
+        """
         # downsampling part
         conv1 = self.conv1(x)
         maxpool1 = self.maxpool1(conv1)

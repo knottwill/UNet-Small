@@ -1,3 +1,8 @@
+"""!@file utils.py
+
+@brief Only contains function to construct a results dataframe from the predictions and ground truth masks
+"""
+
 import os
 import numpy as np
 import pandas as pd
@@ -6,8 +11,27 @@ from ..metrics import mask_accuracies, dice_coefficients
 
 
 def construct_results_dataframe(dataroot, predictions_dir, train_cases, test_cases):
-    # load the images, ground truth masks and mask probability predictions
-    # and calculate DSC and accuracy for all slices for all cases
+    """!
+    @brief Construct a dataframe containing the results of the predictions for each slice of each case
+
+    @details The dataframe contains the following columns:
+    - Set: "train" or "test"
+    - Case: case id
+    - Slice Index: index of the slice (within the case arrays)
+    - Accuracy: Accuracy of the prediction
+    - DSC: Dice similarity coefficient of the prediction
+    - Mask Size: proportion of mask pixels in the ground truth mask
+    - Image: the image
+    - Mask: the ground truth mask
+    - Prediction: the predicted probabilities
+
+    @param dataroot: root directory of the LCTSC dataset
+    @param predictions_dir: directory containing the predictions for each case
+    @param train_cases: list of training case numbers
+    @param test_cases: list of testing case numbers
+
+    @return dataframe containing the results of the predictions
+    """
 
     data = []
 

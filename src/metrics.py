@@ -1,3 +1,12 @@
+"""!@file metrics.py
+
+@brief Functions for calculating metrics for segmentation
+
+@details The metrics we use are:
+- Mask accuracy: the proportion of pixels that are correctly classified
+- Dice similarity coefficient: the overlap between the predicted and true masks
+"""
+
 import numpy as np
 
 
@@ -5,10 +14,10 @@ def mask_accuracies(preds, labels):
     """!
     @brief Calculate the accuracy of the predicted masks
 
-    @param preds: predictions (masks or probabilities). Array of shape (batch_size, H, W)
-    @param labels: true masks. Array of shape (batch_size, H, W)
+    @param preds: predictions (masks or probabilities). Array of shape (batch_size, H, W) or (H, W)
+    @param labels: true masks. Array of shape (batch_size, H, W) or (H, W)
 
-    @return accuracies: array of shape (batch_size,)
+    @return accuracies: array of shape (batch_size,) or scalar
     """
     assert preds.shape == labels.shape, "Predicted masks and true masks must have the same shape"
 
@@ -25,10 +34,10 @@ def dice_coefficients(preds, labels):
     """!
     @brief Calculate the dice similarity coefficients of the predicted masks
 
-    @param preds: predictions (masks or probabilities). Array of shape (batch_size, H, W)
-    @param labels: true masks. Array of shape (batch_size, H, W)
+    @param preds: predictions (masks or probabilities). Array of shape (batch_size, H, W) or (H, W)
+    @param labels: true masks. Array of shape (batch_size, H, W) or (H, W)
 
-    @return DSC: array of shape (batch_size,)
+    @return DSC: array of shape (batch_size,) or scalar
     """
     assert preds.shape == labels.shape, "Predicted masks and true masks must have the same shape"
 

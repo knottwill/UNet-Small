@@ -1,27 +1,35 @@
+"""!@file arguments.py
+
+@brief Module for parsing command line arguments for all scripts in the project
+"""
+
 import argparse
 
 
 def parse_cases(args):
-    """Parse the 'cases' argument which specify the cases to predict on"""
+    """!
+    @brief Parse the 'cases' argument which specify the cases to predict on
 
-    if args.cases == "train":
-        args.cases = [f"Case_{i:03}" for i in range(8)]
-    elif args.cases == "test":
-        args.cases = [f"Case_{i:03}" for i in range(8, 12)]
-    elif args.cases == "all":
+    @details If 'all' is specified, then all cases are used.
+             Otherwise, a list of case numbers can be specified (eg. '0,3,5' for Case_000, Case_003, Case_005)
+    """
+    if args.cases == "all":
         args.cases = [f"Case_{i:03}" for i in range(12)]
     else:
-        case_nums = args.cases.split(",")
+        case_nums = args.cases.split(",")  # split the string into a list of case numbers
         args.cases = []
         for num in case_nums:
             num = int(num)
             assert num >= 0 and num < 11, "Invalid case number"
-            args.cases.append(f"Case_{num:03}")
+            args.cases.append(f"Case_{num:03}")  # append the case number to the list of cases
 
     return args
 
 
 def parse_args():
+    """!
+    @brief Parse command line arguments for all scripts in the project
+    """
     parser = argparse.ArgumentParser()
 
     # for multiple scripts
@@ -32,8 +40,8 @@ def parse_args():
     parser.add_argument(
         "--include_testing",
         type=int,
-        help="0 or 1 - whether to evaluate the model \
-                        on the test set at each epoch of the training process",
+        help="0 or 1 - (Only used for train.py) specifies whether to evaluate the model \
+            on the test set after each epoch of the training process",
     )
 
     # specific to predict.py
@@ -42,13 +50,12 @@ def parse_args():
         "--cases",
         default="test",
         type=str,
-        help="train, test, all, or specific case numbers \
-                        eg. 0,3,5 for Case_000, Case_003, Case_005",
+        help="'all' or specific case numbers eg. 0,3,5 for Case_000, Case_003, Case_005",
     )
-    parser.add_argument("--prediction_type", default="prob", type=str, help="'prob' for probabilities or 'mask' for binary masks")
+    parser.add_argument("--prediction_type", default="prob", type=str, help="'prob' for probabilities or 'mask' for binary masks. MUST BE PROBABILITIES FOR THE ANALYSIS.")
 
     # specific to make_plots.py
-    parser.add_argument("--predictions_dir", type=str, help="directory containing the predictions (probabilities or masks) for each case")
+    parser.add_argument("--predictions_dir", type=str, help="directory containing the predictions for each case")
     parser.add_argument("--metric_logger", type=str, help="file containing metric_logger")
 
     args = parser.parse_known_args()[0]
