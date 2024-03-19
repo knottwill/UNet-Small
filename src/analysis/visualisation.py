@@ -42,10 +42,10 @@ def plot_rows(df):
 
         # Set titles just for the first row
         if i == 0:
-            ax[i, 0].set_title("Input Image")
-            ax[i, 1].set_title("Ground Truth")
-            ax[i, 2].set_title("Prediction")
-            ax[i, 3].set_title("Metrics")
+            ax[i, 0].set_title("Input Image", fontsize=16)
+            ax[i, 1].set_title("Ground Truth", fontsize=16)
+            ax[i, 2].set_title("Prediction", fontsize=16)
+            ax[i, 3].set_title("Metrics", fontsize=16)
 
         # Plot the image, mask and prediction
         ax[i, 0].imshow(image, cmap="gray")

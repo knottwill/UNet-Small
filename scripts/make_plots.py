@@ -17,7 +17,7 @@ Usage: Need to specify the following arguments:
 - `--output_dir`: The directory where the visualisations will be saved
 
 Example:
-`python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predictions --metric_logger ./Models/metric_logger.pkl --output_dir ./plots`
+`python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predictions --metric_logger ./Models/metric_logger_wdk24.pkl --output_dir ./plots`
 """
 
 import os
@@ -128,7 +128,8 @@ print(f"Histograms saved to {save_path}")
 
 fig, ax = plt.subplots(1, 1, figsize=(10, 6))
 sns.scatterplot(x="DSC", y="Accuracy", hue="Mask Size", data=df[test_filter], palette="coolwarm", ax=ax, marker="o", s=70)
-ax.set_title("DSC vs Accuracy")
+ax.set_xlabel("Dice Similarity Coefficient", fontsize=16)
+ax.set_ylabel("Accuracy", fontsize=16)
 
 save_path = join(args.output_dir, "scatterplot.png")
 fig.savefig(save_path)
@@ -189,11 +190,11 @@ AUC = auc(recall, precision)
 fig, ax = plt.subplots()
 ax.step(recall, precision, color="b", alpha=0.2, where="post")
 ax.fill_between(recall, precision, step="post", alpha=0.2, color="b")
-ax.set_xlabel("Recall")
-ax.set_ylabel("Precision")
+ax.set_xlabel("Recall", fontsize=16)
+ax.set_ylabel("Precision", fontsize=16)
 ax.set_ylim([0.0, 1.001])
 ax.set_xlim([0.0, 1.001])
-ax.set_title(f"AUC={AUC}")
+ax.set_title(f"AUC={AUC:.5f}")
 
 save_path = join(args.output_dir, "PR-curve.png")
 fig.savefig(save_path)

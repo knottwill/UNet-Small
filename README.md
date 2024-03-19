@@ -1,6 +1,6 @@
 # Small U-Net for Lung Segmentation
 
-# Description
+## Description
 
 This project trains a small version of U-Net for lung segmentation on 12 cases from the Lung CT Segmentation Challenge (2017). The report for the study can be found in `report/`. All results in the report can be reproduced using the scripts in `scripts`.
 
@@ -23,7 +23,7 @@ Project Structure:
 - `LICENSE` - MIT license.
 - `train_test_split.json` - File containing the train/test split used in the project
 
-# Usage / Re-production
+## Usage / Re-production
 
 To re-create the environment used for the project, you can either use conda or docker. I HIGHLY recommend using conda and NOT docker if possible, since the docker container will not naturally have access to the `mps` or `cuda` device. Running the `train.py` and `predict.py` scripts with a CPU will take far longer.
 
@@ -100,7 +100,7 @@ $ python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predicti
 # --output_dir: The directory where the plots will be saved
 ```
 
-# Timing
+## Timing
 
 Times to run each script:
 - `dataset_summary.py` - 1 minute
@@ -124,3 +124,7 @@ GPU (`mps`):
 - Bus: Built-In
 - Total Number of Cores: 14
 - Metal Support: Metal 3
+
+## Architecture
+
+![U-Net Small architecture](./plots/UNet-Small.png)
