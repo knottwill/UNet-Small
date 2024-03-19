@@ -1,13 +1,31 @@
 """!@file make_plots.py
 
-python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predictions --metric_logger ./Models/metric_logger.pkl --output_dir ./plots
+@brief Script to make the analysis plots from the report
+
+@details
+The plots we make are:
+- Training metrics: Loss, DSC and accuracy over training
+- Histograms of DSC and accuracy for test and train set
+- Scatter plot of DSC vs Accuracy, colour indicates size of mask relative to image
+- Heatmaps: Slice on y-axis, case number on x-axis, colour represents: a) Mask Size b) DSC c) Accuracy
+- Precision-Recall Curve
+
+Usage: Need to specify the following arguments:
+- `--dataroot`: The root directory of the LCTSC dataset
+- `--predictions_dir`: The directory containing the predictions made by the model (should be probabilities)
+- `--metric_logger`: The path to the metric logger pickle file
+- `--output_dir`: The directory where the visualisations will be saved
+
+Example:
+`python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predictions --metric_logger ./Models/metric_logger.pkl --output_dir ./plots`
 """
 
 import os
+from os.path import join
 import sys
 
 # add project root to sys.path
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+project_root = os.path.abspath(join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 import pickle
@@ -25,9 +43,11 @@ from src.arguments import parse_args
 from src.analysis.utils import construct_results_dataframe
 from src.analysis.visualisation import plot_metric_logger
 
+# parse arguments and create output directory
 args = parse_args()
 os.makedirs(args.output_dir, exist_ok=True)
 
+# load train-test split
 with open("train_test_split.json", "r") as f:
     split = json.load(f)
     train_cases = split["train"]
@@ -51,12 +71,15 @@ empty_proportion_train = (df[train_filter]["Mask Size"] == 0).sum() / len(df[tra
 
 fig = plot_metric_logger(metric_logger, empty_proportion_test, empty_proportion_train)
 
-fig.savefig(os.path.join(args.output_dir, "training-metrics.png"))
+save_path = join(args.output_dir, "training-metrics.png")
+fig.savefig(save_path)
+print(f"Training metrics saved to {save_path}")
 
 #################
 # Histograms of DSC and Accuracy for test and train set
 #################
 
+# Test DSC
 fig, ax = plt.subplots(2, 2, figsize=(12, 12))
 sns.histplot(df[test_filter]["DSC"], bins=30, ax=ax[0, 0])
 ax[0, 0].set_ylabel("Frequency", fontsize=16)
@@ -66,6 +89,7 @@ ax[0, 0].set_xticks(np.arange(0, 1.1, 0.1))
 ax[0, 0].legend(["test"], fontsize=16)
 ax[0, 0].text(0.1, 0.9, "(a)", fontsize=16, transform=ax[0, 0].transAxes, fontweight="bold")
 
+# Test Accuracy
 sns.histplot(df[test_filter]["Accuracy"], bins=30, ax=ax[0, 1])
 ax[0, 1].set_ylabel("")
 ax[0, 1].set_xlabel("Accuracy", fontsize=16)
@@ -74,6 +98,7 @@ ax[0, 1].set_ylim(0, 250)
 ax[0, 1].legend(["test"], fontsize=16)
 ax[0, 1].text(0.1, 0.9, "(b)", fontsize=16, transform=ax[0, 1].transAxes, fontweight="bold")
 
+# Train DSC
 sns.histplot(df[train_filter]["DSC"], bins=30, ax=ax[1, 0], color="g")
 ax[1, 0].set_ylabel("Frequency", fontsize=16)
 ax[1, 0].set_ylim(0, 650)
@@ -82,6 +107,7 @@ ax[1, 0].set_xticks(np.arange(0, 1.1, 0.1))
 ax[1, 0].legend(["train"], fontsize=16)
 ax[1, 0].text(0.1, 0.9, "(c)", fontsize=16, transform=ax[1, 0].transAxes, fontweight="bold")
 
+# Train Accuracy
 sns.histplot(df[train_filter]["Accuracy"], bins=30, ax=ax[1, 1], color="g")
 ax[1, 1].set_ylabel("")
 ax[1, 1].set_xlabel("Accuracy", fontsize=16)
@@ -92,8 +118,9 @@ ax[1, 1].text(0.1, 0.9, "(d)", fontsize=16, transform=ax[1, 1].transAxes, fontwe
 
 plt.tight_layout()
 
-fig.savefig(os.path.join(args.output_dir, "histograms.png"))
-
+save_path = join(args.output_dir, "histograms.png")
+fig.savefig(save_path)
+print(f"Histograms saved to {save_path}")
 
 #####################
 # Scatter plot of DSC vs Accuracy, colour indicates size of mask relative to image
@@ -103,8 +130,9 @@ fig, ax = plt.subplots(1, 1, figsize=(10, 6))
 sns.scatterplot(x="DSC", y="Accuracy", hue="Mask Size", data=df[test_filter], palette="coolwarm", ax=ax, marker="o", s=70)
 ax.set_title("DSC vs Accuracy")
 
-fig.savefig(os.path.join(args.output_dir, "scatterplot.png"))
-
+save_path = join(args.output_dir, "scatterplot.png")
+fig.savefig(save_path)
+print(f"Scatterplot saved to {save_path}")
 
 #########################
 # Heatmaps: Slice on y-axis, case number on x-axis, colour represents:
@@ -140,7 +168,9 @@ ax[2].text(-0.05, 1.05, "(c)", fontsize=16, transform=ax[2].transAxes, fontweigh
 cbar = ax[2].collections[0].colorbar
 cbar.set_label("Accuracy", fontsize=16)
 
-fig.savefig(os.path.join(args.output_dir, "heatmaps.png"))
+save_path = join(args.output_dir, "heatmaps.png")
+fig.savefig(save_path)
+print(f"Heatmaps saved to {save_path}")
 
 ###########
 # Precision-Recall Curve
@@ -165,5 +195,6 @@ ax.set_ylim([0.0, 1.001])
 ax.set_xlim([0.0, 1.001])
 ax.set_title(f"AUC={AUC}")
 
-# save figure
-fig.savefig(os.path.join(args.output_dir, "PR-curve.png"))
+save_path = join(args.output_dir, "PR-curve.png")
+fig.savefig(save_path)
+print(f"Precision-Recall curve saved to {save_path}")

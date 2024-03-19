@@ -7,3 +7,5 @@ Models/
 Predictions/
 plots/
 get_statistics.py
+latex/
+html/
