@@ -1,12 +1,12 @@
 # Small U-Net for Lung Segmentation
 
-### Description
+## Description
 
 This project trains a small version of U-Net for lung segmentation on 12 cases from the Lung CT Segmentation Challenge (2017). The report for the study can be found in `report/`. All results in the report can be reproduced using the scripts in `scripts`.
 
 I tried to ensure the training/prediction/evaluation of the model would be deterministic by using seeds for the training process, however since I trained the model locally using an `mps` device, it is possible that the exact results will change when training on a different device. The model (and metric logger) I trained locally is saved in `Models/UNet_wdk24.pt` and `Models/metric_logger_wdk24.pkl`.
 
-### Usage / Re-production
+## Usage / Re-production
 
 To re-create the environment used for the project, you can either use conda or docker. I HIGHLY recommend using conda and NOT docker if possible, since the docker container will not naturally have access to the `mps` or `cuda` device. Running the `train.py` and `predict.py` scripts with a CPU will take far longer.
 
@@ -23,6 +23,8 @@ Check everything is working by running `pytest`.
 
 Re-production is done by running the scripts in the order given blow. Options for the scripts are specified by passing arguments. Use the `--help` argument on any of the scripts. The same argument parser is used for all scripts, hence many of the possible arguments will be redundant for different scripts. All commands below assume they are being run from the root directory of the project, and hence use relative paths. If this is not the case, or your dataset/predictions/models etc. are not in the default locations, adjust the arguments where necessary. More details can be found in the docstrings of each script.
 
+#### 1. Pre-processing
+
 First, generate summary statistics of the dataset and perform pre-processing as described in the report:
 
 ```bash
@@ -31,6 +33,8 @@ $ python scripts/preprocessing.py --dataroot ./Dataset # Pre-process data
 
 # --dataroot: root directory of LCTSC dataset
 ```
+
+#### 2. Training
 
 Next, train the model. This script will save the state dictionary as `UNet.pt` and metric logger as `metric_logger.pkl` in the `--output_dir`.
 
@@ -41,6 +45,8 @@ $ python ./scripts/train.py --dataroot ./Dataset --output_dir ./Models --include
 # --output_dir: The directory to save the trained model and the metric logger
 # --include_testing: Whether to evaluate the model on the test set after each epoch (this is necessary to re-produce the results from the report)
 ```
+
+#### 3. Prediction
 
 Get predictions of the trained model for the whole dataset. DO NOT CHANGE `--prediction_type prob`.
 
@@ -53,6 +59,8 @@ $ python scripts/predict.py --dataroot ./Dataset --model_state_dict ./Models/UNe
 # --cases: The cases to predict on. Can be 'all' or a list of case numbers (eg. '0,3,5')
 # --prediction_type: The type of prediction to save ('prob' for probabilities or 'mask' for binary masks). MUST BE 'prob' TO RE-PRODUCE RESULTS IN REPORT (we plot a precision-recall curve)
 ```
+
+#### 4. Analysis
 
 Generate the main performance statistics, and plot visualisations of examples in the test set.
 
@@ -75,7 +83,7 @@ $ python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predicti
 # --output_dir: The directory where the plots will be saved
 ```
 
-### Timing
+## Timing
 
 Times to run each script:
 - `dataset_summary.py` - 1 minute
