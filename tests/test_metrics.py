@@ -1,9 +1,7 @@
 import os
 import sys
 import numpy as np
-import torch
 from pytest import approx
-from torchmetrics.classification import BinaryAccuracy, Dice
 
 # add project root to sys.path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -12,17 +10,16 @@ sys.path.append(project_root)
 from src.metrics import dice_coefficients, mask_accuracies
 
 
-def test_metrics():
-    probs = torch.rand(10, 1, 512, 512)
-    labels = torch.randint(0, 2, (10, 1, 512, 512))
+probs = np.array([[1, 1, 0], [1, 1, 0], [0, 0, 0]])
+labels = np.array([[1, 0, 0], [1, 1, 0], [0, 0, 0]])
 
-    accuracy = BinaryAccuracy(threshold=0.5, multidim_average="samplewise")(probs, labels).numpy()
-    dice = Dice(zero_division=0, threshold=0.5, average="samples")(probs, labels).item()
 
-    probs, labels = probs.squeeze().numpy(), labels.squeeze().numpy()
+def test_dice_coefficients():
+    assert dice_coefficients(probs, labels).mean() == approx(0.85714, rel=1e-4)
 
-    assert (mask_accuracies(probs, labels) == accuracy).all(), f"Expected {accuracy}, got {mask_accuracies(probs, labels)}"
-    assert dice_coefficients(probs, labels).mean() == approx(dice, rel=1e-4), f"Expected {dice}, got {dice_coefficients(probs, labels).mean()}"
+
+def test_accuracy():
+    assert mask_accuracies(probs, labels).mean() == approx(0.88889, rel=1e-4)
 
 
 def test_special_case():

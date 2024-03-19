@@ -21,6 +21,8 @@ def test_combo_loss():
     beta = 0.5
 
     combo_loss = ComboLoss()(probs, labels)
+
+    # manual calculation of combo loss
     manual_combo_loss = alpha * beta * nn.BCELoss()(probs, labels) + (1 - alpha) * (SoftDiceLoss()(probs, labels) - 1.0)
 
     assert torch.isclose(combo_loss, manual_combo_loss)
