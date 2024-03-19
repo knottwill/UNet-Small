@@ -48,7 +48,7 @@ def parse_args():
     parser.add_argument("--model_state_dict", type=str, help="path to the trained model state dict file")
     parser.add_argument(
         "--cases",
-        default="test",
+        default="all",
         type=str,
         help="'all' or specific case numbers eg. 0,3,5 for Case_000, Case_003, Case_005",
     )
