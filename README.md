@@ -80,7 +80,7 @@ $ python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predicti
 Times to run each script:
 - `dataset_summary.py` - 1 minute
 - `preprocessing.py` - 1 minute
-- `train.py` - 15 minutes (using `mps` device)
+- `train.py` - 20 minutes (using `mps` device)
 - `predict.py` - 3 minutes (using `mps` device)
 - `stats_and_visualisation.py` - 1 minute
 - `make_plots.py` - 5 minute
