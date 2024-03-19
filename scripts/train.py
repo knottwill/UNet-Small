@@ -1,8 +1,13 @@
-"""!@file
+"""!@file train.py
 
 @brief Script for training the UNet model for lung segmentation
 
-Example usage:
+@details
+Usage: Need to specify the following arguments:
+- `--dataroot`: The root directory of the LCTSC dataset
+- `--output_dir`: The directory to save the trained model and the metric logger
+- `--include_testing`: Whether to evaluate the model on the test set after each epoch (this is necessary to re-produce the results from the report)
+
 python ./scripts/train.py --dataroot ./Dataset --output_dir ./Models --include_testing 1
 """
 
@@ -39,24 +44,29 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed(SEED)
     torch.cuda.manual_seed_all(SEED)
 
-args = parse_args()
+args = parse_args()  # parse command line arguments
 
-os.makedirs(args.output_dir, exist_ok=True)
+os.makedirs(args.output_dir, exist_ok=True)  # create the output directory if it doesn't exist
 
+# load the train-test split
 with open("train_test_split.json", "r") as f:
     split = json.load(f)
     train_cases = split["train"]
     test_cases = split["test"]
-print(f"Training on {len(train_cases)} cases: {train_cases}\n\tTesting on {len(test_cases)} cases: {test_cases}.")
+print(f"Training on {len(train_cases)} cases: {train_cases}\nTesting on {len(test_cases)} cases: {test_cases}.")
 
+# create the train and test datasets
 train_set = LCTDataset(args.dataroot, train_cases)
 test_set = LCTDataset(args.dataroot, test_cases)
 
+# create the train and test data loaders
 train_loader = DataLoader(train_set, batch_size=3, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=3, shuffle=False)
 
+# Define the device (in order of priority: GPU, MPS, CPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
+# Define the model
 model = UNet(in_channels=1, out_channels=1)
 model.to(device)
 
@@ -64,10 +74,10 @@ model.to(device)
 optimizer = optim.SGD(model.parameters(), lr=0.1)
 
 metric_logger = {"Loss": {"train": [], "test": []}, "Accuracy": {"train": [], "test": []}, "DSC": {"train": [], "test": []}}
-
 num_epochs = 10
 
 for epoch in range(num_epochs):
+    # train for one epoch and log the metrics
     train_loss, train_acc, train_dsc = train(model, device, train_loader, optimizer)
     print(f"[train] Epoch {epoch+1}/{num_epochs} - Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}, DSC: {train_dsc:.4f}")
     metric_logger["Loss"]["train"].append(train_loss)
@@ -79,6 +89,7 @@ for epoch in range(num_epochs):
     torch.save(model.state_dict(), save_path)
     print(f"Model saved to {save_path}")
 
+    # evaluate the model on the test set
     if args.include_testing:
         test_loss, test_acc, test_dsc = evaluate(model, device, test_loader)
         print(f"[test] Epoch {epoch+1}/{num_epochs} - Loss: {test_loss:.4f}, Accuracy: {test_acc:.4f}, DSC: {test_dsc:.4f}")

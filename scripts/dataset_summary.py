@@ -1,5 +1,7 @@
 """!@file dataset_summary.py
 
+@brief Script for summarising the dataset
+
 @details This script is used to summarise the dataset. It prints the following information:
 - Some of the key metadata for each case in the dataset (eg. Gender), from the DICOM files
 - The number of training and testing images
@@ -7,9 +9,12 @@
 - The overall proportion of mask pixels in the dataset (out of all pixels)
 - The proportion of mask pixels in the training and testing sets
 
-Example usage:
+Usage:
+Just need specify the root directory of the LCTSC dataset:
+
 python scripts/dataset_summary.py --dataroot ./Dataset
 """
+
 
 import os
 from os.path import join
