@@ -1,12 +1,29 @@
 # Small U-Net for Lung Segmentation
 
-## Description
+# Description
 
 This project trains a small version of U-Net for lung segmentation on 12 cases from the Lung CT Segmentation Challenge (2017). The report for the study can be found in `report/`. All results in the report can be reproduced using the scripts in `scripts`.
 
 I tried to ensure the training/prediction/evaluation of the model would be deterministic by using seeds for the training process, however since I trained the model locally using an `mps` device, it is possible that the exact results will change when training on a different device. The model (and metric logger) I trained locally is saved in `Models/UNet_wdk24.pt` and `Models/metric_logger_wdk24.pkl`.
 
-## Usage / Re-production
+Project Structure:
+- `Dataset/` - LCTSC dataset
+- `docs/` - Documentation for the project
+- `Models/` - Directory containing trained model state dictionaries and
+- `plots/` - Directory containing plots/visualisations used in the repot
+- `Predictions/` - Directory containing model predictions (probabilities)
+- `report/` - Contains project report
+- `scripts/` - Main scripts for re-producing the results of the projects
+- `src/` - Source code containing re-usuable components used in the scripts
+- `tests/` - unit tests
+- `.gitignore` - Tells git which files to ignore
+- `.pre-commit-config.yaml` - Specifies pre-commit hooks to protect the `main` branch
+- `Dockerfile` - Dockerfile to generate docker image
+- `environment.yml` - Conda environment used for the project
+- `LICENSE` - MIT license.
+- `train_test_split.json` - File containing the train/test split used in the project
+
+# Usage / Re-production
 
 To re-create the environment used for the project, you can either use conda or docker. I HIGHLY recommend using conda and NOT docker if possible, since the docker container will not naturally have access to the `mps` or `cuda` device. Running the `train.py` and `predict.py` scripts with a CPU will take far longer.
 
@@ -83,7 +100,7 @@ $ python scripts/make_plots.py --dataroot ./Dataset --predictions_dir ./Predicti
 # --output_dir: The directory where the plots will be saved
 ```
 
-## Timing
+# Timing
 
 Times to run each script:
 - `dataset_summary.py` - 1 minute

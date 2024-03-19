@@ -103,10 +103,10 @@ for case in cases:
         case_files = sorted(os.listdir(case_dir), key=slice_num, reverse=True)
 
     # get array of images (CT scans)
-    images = np.zeros((len(case_files), 512, 512))  # define array of zeros so that pixel_array is converted to float
+    images = np.zeros((len(case_files), 512, 512), dtype=np.float32)
     for i, file in enumerate(case_files):
         dcm = dcmread(join(case_dir, file))
-        images[i] = dcm.pixel_array
+        images[i] = dcm.pixel_array.astype(np.float32)
 
     # save array in npz file
     filepath = join(args.dataroot, "Images", f"{case}.npz")

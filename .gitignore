@@ -2,6 +2,5 @@
 __pycache__/
 .DS_Store
 .pytest_cache/
-plots/
 latex/
 html/
