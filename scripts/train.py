@@ -65,6 +65,7 @@ test_loader = DataLoader(test_set, batch_size=3, shuffle=False)
 
 # Define the device (in order of priority: GPU, MPS, CPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+print(f"\nUsing device: {device}\n")
 
 # Define the model
 model = UNet(in_channels=1, out_channels=1)

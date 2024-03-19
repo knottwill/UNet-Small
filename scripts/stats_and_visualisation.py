@@ -113,7 +113,7 @@ print("Proportion of test set with DSC < 0.8: ", len(test_with_mask[low_dsc]) / 
 # high dsc catagory
 high = test_with_mask[high_dsc].sample(3, random_state=0)
 fig = plot_rows(high)
-fig.savefig(os.path.join(args.output_dir, "best_high_dsc.png"))
+fig.savefig(os.path.join(args.output_dir, "high-dsc.png"))
 
 # intermediate dsc category
 # we pick them out at regular intervals of DSC

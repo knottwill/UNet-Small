@@ -35,6 +35,7 @@ args = parse_args()
 os.makedirs(args.output_dir, exist_ok=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+print(f"\nUsing device: {device}\n")
 
 # load pre-trained model
 model = UNet(in_channels=1, out_channels=1).to(device)
