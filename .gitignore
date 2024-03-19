@@ -1,11 +1,7 @@
 *.ipynb
-Dataset/
 __pycache__/
 .DS_Store
 .pytest_cache/
-Models/
-Predictions/
 plots/
-get_statistics.py
 latex/
 html/
