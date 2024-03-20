@@ -1,15 +1,21 @@
 # Small U-Net for Lung Segmentation
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-v2.2.0-red.svg?logo=PyTorch&style=for-the-badge" /></a>
+<a href="#"><img src="https://img.shields.io/badge/python-v3.12.2-blue.svg?logo=python&style=for-the-badge" /></a>
+<a href="https://hub.docker.com/r/milesial/unet"><img src="https://img.shields.io/badge/docker%20image-available-blue?logo=Docker&style=for-the-badge" /></a>
+
 ## Description
 
-This project trains a small version of U-Net for lung segmentation on 12 cases from the Lung CT Segmentation Challenge (2017). The report for the study can be found in `report/`. All results in the report can be reproduced using the scripts in `scripts`.
+This project trains a small version of U-Net for lung segmentation on 12 cases from the Lung CT Segmentation Challenge (2017). The report for the study can be found in `report/`. All results in the report can be reproduced using the scripts in `scripts/`.
 
 I tried to ensure the training/prediction/evaluation of the model would be deterministic by using seeds for the training process, however since I trained the model locally using an `mps` device, it is possible that the exact results will change when training on a different device. The model (and metric logger) I trained locally is saved in `Models/UNet_wdk24.pt` and `Models/metric_logger_wdk24.pkl`.
 
 Project Structure:
 - `Dataset/` - LCTSC dataset
 - `docs/` - Documentation for the project
-- `Models/` - Directory containing trained model state dictionaries and
+- `Models/` - Directory containing trained model state dictionaries and metric loggers of their training.
 - `plots/` - Directory containing plots/visualisations used in the repot
 - `Predictions/` - Directory containing model predictions (probabilities)
 - `report/` - Contains project report
@@ -25,13 +31,13 @@ Project Structure:
 
 ## Usage / Re-production
 
-To re-create the environment used for the project, you can either use conda or docker. I HIGHLY recommend using conda and NOT docker if possible, since the docker container will not naturally have access to the `mps` or `cuda` device. Running the `train.py` and `predict.py` scripts with a CPU will take far longer.
+To re-create the environment used for the project, you can either use conda or docker. I HIGHLY recommend using conda and not docker if possible, since the docker container will not naturally have access to the `mps` or `cuda` device. Running the `train.py` and `predict.py` scripts with a CPU will take far longer.
 
 ```bash
 # Option 1: re-create conda environment
 $ conda env create -f environment.yml -n <env-name>
 
-# Option 2: Generate docker image and run container
+# Option 2 (not recommended): Generate docker image and run container
 $ docker build -t <image_name> .
 $ docker run -ti <image_name>
 ```
@@ -126,5 +132,7 @@ GPU (`mps`):
 - Metal Support: Metal 3
 
 ## Architecture
+
+Schematic of the architecture of our U-Net small implementation:
 
 ![U-Net Small architecture](./plots/UNet-Small.png)
