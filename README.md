@@ -1,7 +1,5 @@
 # Small U-Net for Lung Segmentation
 
-&nbsp;&nbsp;&nbsp;&nbsp;
-
 <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-v2.2.0-red.svg?logo=PyTorch&style=for-the-badge" /></a>
 <a href="#"><img src="https://img.shields.io/badge/python-v3.12.2-blue.svg?logo=python&style=for-the-badge" /></a>
 <a href="https://hub.docker.com/r/milesial/unet"><img src="https://img.shields.io/badge/docker%20image-available-blue?logo=Docker&style=for-the-badge" /></a>
