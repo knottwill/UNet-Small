@@ -27,6 +27,12 @@ Project Structure:
 - `LICENSE` - MIT license.
 - `train_test_split.json` - File containing the train/test split used in the project
 
+## Architecture
+
+Schematic of the architecture of our U-Net small implementation:
+
+![U-Net Small architecture](./plots/UNet-Small.png)
+
 ## Usage / Re-production
 
 #### 1. Set-up
@@ -130,9 +136,3 @@ GPU (`mps`):
 - Bus: Built-In
 - Total Number of Cores: 14
 - Metal Support: Metal 3
-
-## Architecture
-
-Schematic of the architecture of our U-Net small implementation:
-
-![U-Net Small architecture](./plots/UNet-Small.png)
