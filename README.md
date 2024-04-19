@@ -31,7 +31,23 @@ Project Structure:
 
 ## Usage / Re-production
 
-To re-create the environment used for the project, you can either use conda or docker. I HIGHLY recommend using conda and not docker if possible, since the docker container will not naturally have access to the `mps` or `cuda` device. Running the `train.py` and `predict.py` scripts with a CPU will take far longer.
+#### 1. Set-up
+
+First, clone the project repo with:
+
+```bash
+$ git clone https://gitlab.developers.cam.ac.uk/phy/data-intensive-science-mphil/A2_MED_Assessment/wdk24.git
+```
+
+Next, obtain the LCTSC dataset and move it into the root directory of the project:
+
+```bash
+$ git clone https://github.com/loressa/DataScience_MPhill_practicals.git
+$ mv DataScience_MPhill_practicals/Dataset wdk24   # move dataset into project root
+$ rm -rf DataScience_MPhill_practicals             # delete unnecessary files
+```
+
+To re-create the environment used for the project, you can either use conda or docker. I HIGHLY recommend using conda for best performance and not docker, since the docker container will not naturally have access to the `mps` or `cuda` device. Running the `train.py` and `predict.py` scripts with a CPU will take far longer.
 
 ```bash
 # Option 1: re-create conda environment
