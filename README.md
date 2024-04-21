@@ -8,9 +8,17 @@
 
 This project trains a small version of U-Net for lung segmentation on 12 cases from the Lung CT Segmentation Challenge (2017). The report for the study can be found in `report/`. All results in the report can be reproduced using the scripts in `scripts/`.
 
-I tried to ensure the training/prediction/evaluation of the model would be deterministic by using seeds for the training process, however since I trained the model locally using an `mps` device, it is possible that the exact results will change when training on a different device. The model (and metric logger) I trained locally is saved in `Models/UNet_wdk24.pt` and `Models/metric_logger_wdk24.pkl`.
+The model (and metric logger) I trained locally is saved in `Models/UNet_wdk24.pt` and `Models/metric_logger_wdk24.pkl`.
 
-Project Structure:
+<details open>
+<summary><b>Toggle Examples</b></summary>
+<br>
+  <img src="./plots/example.png" alt="U-Net Small architecture">
+</details>
+<br>
+<details open>
+<summary><b>Toggle Project Structure</b></summary>
+
 - `Dataset/` - LCTSC dataset
 - `docs/` - Documentation for the project
 - `Models/` - Directory containing trained model state dictionaries and metric loggers of their training.
@@ -26,6 +34,7 @@ Project Structure:
 - `environment.yml` - Conda environment used for the project
 - `LICENSE` - MIT license.
 - `train_test_split.json` - File containing the train/test split used in the project
+</details>
 
 ## Architecture
 
